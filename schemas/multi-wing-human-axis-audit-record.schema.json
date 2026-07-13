@@ -1,0 +1,740 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/multi-wing-human-axis-audit-record.schema.json",
+  "title": "Multi-Wing Human Axis Audit Record",
+  "description": "Audits whether distributed AI wings, agents, models, and tools remain bound to a shared Human Axis, purpose baseline, authority boundary, and trace lineage.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "audit_id",
+    "created_at",
+    "orchestrator",
+    "human_axis_baseline",
+    "audited_wings",
+    "cross_wing_consistency",
+    "findings",
+    "consensus_result",
+    "human_gate",
+    "remediation",
+    "audit_status",
+    "trace"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.5.0"
+    },
+    "audit_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "orchestrator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "orchestrator_id",
+        "orchestrator_role",
+        "audit_mode"
+      ],
+      "properties": {
+        "orchestrator_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "orchestrator_role": {
+          "type": "string",
+          "enum": [
+            "orchestrator",
+            "verifier-wing",
+            "audit-agent",
+            "human-auditor",
+            "hybrid-auditor"
+          ]
+        },
+        "audit_mode": {
+          "type": "string",
+          "enum": [
+            "scheduled",
+            "event-triggered",
+            "pre-execution",
+            "post-execution",
+            "emergency"
+          ]
+        }
+      }
+    },
+    "human_axis_baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_id",
+        "axis_id",
+        "purpose_id",
+        "purpose_statement",
+        "purpose_digest",
+        "retained_human_functions"
+      ],
+      "properties": {
+        "binding_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "axis_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose_statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "purpose_digest": {
+          "type": "string",
+          "pattern": "^[a-fA-F0-9]{64}$"
+        },
+        "retained_human_functions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "purpose-formation",
+              "value-arbitration",
+              "irreversible-action-approval",
+              "civilizational-direction",
+              "override",
+              "shutdown",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    "audited_wings": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "wing_id",
+          "wing_role",
+          "local_binding_id",
+          "declared_purpose",
+          "purpose_digest",
+          "authority_profile",
+          "trace_status",
+          "audit_result"
+        ],
+        "properties": {
+          "wing_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "wing_role": {
+            "type": "string",
+            "enum": [
+              "finder",
+              "analyst",
+              "planner",
+              "executor",
+              "verifier",
+              "boundary",
+              "bridge",
+              "trace-core",
+              "human-gate",
+              "orchestrator",
+              "other"
+            ]
+          },
+          "local_binding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "declared_purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose_digest": {
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{64}$"
+          },
+          "authority_profile": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "autonomous_capabilities",
+              "approval_gated_capabilities",
+              "prohibited_capabilities"
+            ],
+            "properties": {
+              "autonomous_capabilities": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "approval_gated_capabilities": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "prohibited_capabilities": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "trace_status": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "origin_trace_present",
+              "decision_trace_present",
+              "latest_trace_id"
+            ],
+            "properties": {
+              "origin_trace_present": {
+                "type": "boolean"
+              },
+              "decision_trace_present": {
+                "type": "boolean"
+              },
+              "latest_trace_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trace_gap_detected": {
+                "type": "boolean"
+              }
+            }
+          },
+          "audit_result": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "binding_match",
+              "purpose_match",
+              "authority_match",
+              "drift_detected",
+              "confidence"
+            ],
+            "properties": {
+              "binding_match": {
+                "type": "boolean"
+              },
+              "purpose_match": {
+                "type": "boolean"
+              },
+              "authority_match": {
+                "type": "boolean"
+              },
+              "drift_detected": {
+                "type": "boolean"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "cross_wing_consistency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shared_axis_intact",
+        "purpose_consistency_score",
+        "authority_consistency_score",
+        "trace_continuity_score",
+        "local_purpose_centers_detected",
+        "inconsistent_wing_ids"
+      ],
+      "properties": {
+        "shared_axis_intact": {
+          "type": "boolean"
+        },
+        "purpose_consistency_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "authority_consistency_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "trace_continuity_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "local_purpose_centers_detected": {
+          "type": "boolean"
+        },
+        "inconsistent_wing_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "finding_id",
+          "severity",
+          "finding_type",
+          "affected_wing_ids",
+          "description",
+          "evidence_trace_ids"
+        ],
+        "properties": {
+          "finding_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "informational",
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
+          "finding_type": {
+            "type": "string",
+            "enum": [
+              "binding-mismatch",
+              "purpose-divergence",
+              "local-purpose-center",
+              "authority-expansion",
+              "approval-gate-bypass",
+              "trace-break",
+              "origin-trace-loss",
+              "cross-wing-conflict",
+              "hidden-delegation",
+              "other"
+            ]
+          },
+          "affected_wing_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_trace_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "consensus_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consensus_method",
+        "participating_wings",
+        "agreeing_wings",
+        "dissenting_wings",
+        "result",
+        "rationale"
+      ],
+      "properties": {
+        "consensus_method": {
+          "type": "string",
+          "enum": [
+            "unanimous",
+            "majority",
+            "weighted",
+            "verifier-led",
+            "human-confirmed",
+            "hybrid"
+          ]
+        },
+        "participating_wings": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "agreeing_wings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "dissenting_wings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "conditional-pass",
+            "fail",
+            "inconclusive"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "human_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "status",
+        "reasons",
+        "minimum_approvals"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "not-required",
+            "pending",
+            "approved",
+            "rejected",
+            "expired",
+            "blocked"
+          ]
+        },
+        "reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "audit-failure",
+              "critical-finding",
+              "purpose-divergence",
+              "authority-expansion",
+              "trace-break",
+              "cross-wing-conflict",
+              "other"
+            ]
+          }
+        },
+        "authorized_reviewers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "minimum_approvals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "response_deadline": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "remediation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "affected_wing_ids",
+        "required_changes",
+        "execution_state"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "none",
+            "monitor",
+            "rebind-wing",
+            "restore-purpose-baseline",
+            "reduce-authority",
+            "restore-trace",
+            "isolate-wing",
+            "suspend-wing",
+            "suspend-orchestration",
+            "human-review"
+          ]
+        },
+        "affected_wing_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required_changes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "execution_state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "monitoring",
+            "restricted",
+            "paused",
+            "suspended",
+            "stopped"
+          ]
+        },
+        "remediation_deadline": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verification_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "audit_status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "under-review",
+        "passed",
+        "failed",
+        "remediating",
+        "resolved"
+      ]
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_binding_record_ids",
+        "source_record_ids",
+        "audit_receipt_required",
+        "next_record_type"
+      ],
+      "properties": {
+        "source_binding_record_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "source_record_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "audit_receipt_required": {
+          "type": "boolean"
+        },
+        "next_record_type": {
+          "type": "string",
+          "enum": [
+            "updated-human-axis-binding-record",
+            "purpose-drift-detection-record",
+            "human-re-reference-request",
+            "self-limitation-record",
+            "remediation-record",
+            "audit-receipt",
+            "none"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "cross_wing_consistency": {
+            "properties": {
+              "local_purpose_centers_detected": {
+                "const": true
+              }
+            },
+            "required": [
+              "local_purpose_centers_detected"
+            ]
+          }
+        },
+        "required": [
+          "cross_wing_consistency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "cross_wing_consistency": {
+            "properties": {
+              "inconsistent_wing_ids": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consensus_result": {
+            "properties": {
+              "result": {
+                "const": "fail"
+              }
+            },
+            "required": [
+              "result"
+            ]
+          }
+        },
+        "required": [
+          "consensus_result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "human_gate": {
+            "properties": {
+              "required": {
+                "const": true
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "approved",
+                  "rejected",
+                  "expired",
+                  "blocked"
+                ]
+              },
+              "minimum_approvals": {
+                "minimum": 1
+              }
+            }
+          },
+          "remediation": {
+            "properties": {
+              "execution_state": {
+                "enum": [
+                  "restricted",
+                  "paused",
+                  "suspended",
+                  "stopped"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "findings": {
+            "contains": {
+              "type": "object",
+              "properties": {
+                "severity": {
+                  "const": "critical"
+                }
+              },
+              "required": [
+                "severity"
+              ]
+            }
+          }
+        },
+        "required": [
+          "findings"
+        ]
+      },
+      "then": {
+        "properties": {
+          "human_gate": {
+            "properties": {
+              "required": {
+                "const": true
+              },
+              "status": {
+                "enum": [
+                  "pending",
+                  "approved",
+                  "rejected",
+                  "expired",
+                  "blocked"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
