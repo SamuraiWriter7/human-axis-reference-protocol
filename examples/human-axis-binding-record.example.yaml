@@ -1,0 +1,72 @@
+schema_version: "0.1.0"
+binding_id: "habr-2026-0001"
+created_at: "2026-07-12T12:30:00+09:00"
+
+ai_system:
+  system_id: "assistant-alpha"
+  system_name: "Assistant Alpha"
+  system_role: "agent"
+
+human_axis:
+  axis_id: "human-axis-001"
+  axis_type: "individual"
+  responsible_party: "designated human operator"
+  retained_functions:
+    - "purpose-formation"
+    - "value-arbitration"
+    - "irreversible-action-approval"
+    - "override"
+    - "shutdown"
+
+purpose_reference:
+  purpose_id: "purpose-001"
+  statement: "Support human-defined goals without replacing human purpose formation."
+  origin: "human-authored"
+  success_criteria:
+    - "Outputs remain relevant to the declared human purpose."
+    - "Irreversible actions require human approval."
+    - "Purpose drift triggers re-reference."
+
+capability_scope:
+  permitted_capabilities:
+    - "search"
+    - "reasoning"
+    - "summarization"
+    - "planning"
+    - "reversible tool use"
+  prohibited_self_expansions:
+    - "creating new terminal goals without human approval"
+    - "removing human approval gates"
+    - "rewriting authority boundaries"
+    - "concealing purpose drift"
+
+authority_boundaries:
+  autonomous_actions:
+    - "generate recommendations"
+    - "prepare reversible drafts"
+  human_approval_required:
+    - "external publication"
+    - "financial commitment"
+    - "access-control change"
+    - "destructive operation"
+  never_autonomous:
+    - "self-removal of the human axis"
+    - "self-expansion of terminal authority"
+    - "suppression of audit traces"
+
+re_reference_policy:
+  triggers:
+    - "purpose-ambiguity"
+    - "value-conflict"
+    - "scope-expansion"
+    - "irreversible-impact"
+    - "trace-break"
+  required_response: "pause-and-request-human-input"
+  maximum_unreferenced_steps: 0
+
+binding_status: "active"
+
+trace:
+  origin_trace_id: "origin-trace-2026-0712-001"
+  decision_trace_required: true
+  audit_receipt_required: true
