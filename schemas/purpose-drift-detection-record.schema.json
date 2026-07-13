@@ -1,0 +1,359 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/purpose-drift-detection-record.schema.json",
+  "title": "Purpose Drift Detection Record",
+  "description": "Records evidence that an AI system's operational objective, plan, authority use, or behavior has diverged from its declared human-originated purpose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "drift_record_id",
+    "binding_id",
+    "observed_at",
+    "observer",
+    "purpose_baseline",
+    "observation_window",
+    "observed_state",
+    "drift_assessment",
+    "alignment_delta",
+    "required_response",
+    "record_status",
+    "trace"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.2.0"
+    },
+    "drift_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "binding_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "observer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observer_id",
+        "observer_type"
+      ],
+      "properties": {
+        "observer_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observer_type": {
+          "type": "string",
+          "enum": [
+            "ai-system",
+            "human",
+            "auditor",
+            "multi-wing",
+            "hybrid"
+          ]
+        },
+        "observer_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "purpose_baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "purpose_id",
+        "statement",
+        "origin_trace_id"
+      ],
+      "properties": {
+        "purpose_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin_trace_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "observation_window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "started_at",
+        "ended_at"
+      ],
+      "properties": {
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "observed_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_objective",
+        "active_proxy_metrics",
+        "planned_actions"
+      ],
+      "properties": {
+        "current_objective": {
+          "type": "string",
+          "minLength": 1
+        },
+        "active_proxy_metrics": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "planned_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "authority_changes_detected": {
+          "type": "boolean"
+        }
+      }
+    },
+    "drift_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "drift_types",
+        "severity",
+        "confidence",
+        "evidence"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "none",
+            "suspected",
+            "confirmed"
+          ]
+        },
+        "drift_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "proxy-substitution",
+              "scope-expansion",
+              "authority-expansion",
+              "value-displacement",
+              "approval-gate-bypass",
+              "trace-loss",
+              "terminal-goal-creation",
+              "other"
+            ]
+          }
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "none",
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "evidence_id",
+              "evidence_type",
+              "description"
+            ],
+            "properties": {
+              "evidence_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_type": {
+                "type": "string",
+                "enum": [
+                  "plan",
+                  "action",
+                  "output",
+                  "tool-call",
+                  "policy-change",
+                  "trace-gap",
+                  "human-report",
+                  "other"
+                ]
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "source_trace_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "alignment_delta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "purpose_similarity",
+        "human_reference_intact",
+        "authority_boundary_intact",
+        "irreversible_action_risk"
+      ],
+      "properties": {
+        "purpose_similarity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "human_reference_intact": {
+          "type": "boolean"
+        },
+        "authority_boundary_intact": {
+          "type": "boolean"
+        },
+        "irreversible_action_risk": {
+          "type": "string",
+          "enum": [
+            "none",
+            "possible",
+            "imminent",
+            "occurred"
+          ]
+        }
+      }
+    },
+    "required_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "human_review_required",
+        "execution_state",
+        "rationale"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "continue-with-monitoring",
+            "request-human-review",
+            "pause-and-re-reference",
+            "suspend-execution",
+            "initiate-rollback",
+            "emergency-stop"
+          ]
+        },
+        "human_review_required": {
+          "type": "boolean"
+        },
+        "execution_state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "monitoring",
+            "paused",
+            "suspended",
+            "rollback",
+            "stopped"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "response_deadline": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "record_status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "under-review",
+        "resolved",
+        "dismissed",
+        "escalated"
+      ]
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_binding_record_id",
+        "source_decision_trace_ids",
+        "audit_receipt_required"
+      ],
+      "properties": {
+        "source_binding_record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_decision_trace_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "audit_receipt_required": {
+          "type": "boolean"
+        },
+        "next_record_type": {
+          "type": "string",
+          "enum": [
+            "human-re-reference-request",
+            "self-limitation-record",
+            "audit-receipt",
+            "none"
+          ]
+        }
+      }
+    }
+  }
+}
