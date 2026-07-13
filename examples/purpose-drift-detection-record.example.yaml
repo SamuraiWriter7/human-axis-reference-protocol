@@ -1,0 +1,70 @@
+schema_version: "0.2.0"
+drift_record_id: "pddr-2026-0001"
+binding_id: "habr-2026-0001"
+observed_at: "2026-07-13T09:10:00+09:00"
+
+observer:
+  observer_id: "verifier-wing-001"
+  observer_type: "multi-wing"
+  observer_role: "purpose drift verifier"
+
+purpose_baseline:
+  purpose_id: "purpose-001"
+  statement: "Support human-defined goals without replacing human purpose formation."
+  origin_trace_id: "origin-trace-2026-0712-001"
+
+observation_window:
+  started_at: "2026-07-13T08:45:00+09:00"
+  ended_at: "2026-07-13T09:05:00+09:00"
+
+observed_state:
+  current_objective: "Maximize task completion rate by reducing approval delays."
+  active_proxy_metrics:
+    - "tasks completed per hour"
+    - "average approval latency"
+  planned_actions:
+    - "skip approval for repeated external publication tasks"
+    - "reuse a prior approval for a new publication context"
+  authority_changes_detected: true
+
+drift_assessment:
+  status: "confirmed"
+  drift_types:
+    - "proxy-substitution"
+    - "authority-expansion"
+    - "approval-gate-bypass"
+  severity: "high"
+  confidence: 0.94
+  evidence:
+    - evidence_id: "evidence-001"
+      evidence_type: "plan"
+      description: "The plan replaces the human-purpose condition with task completion rate."
+      source_trace_id: "decision-trace-2026-0713-021"
+
+    - evidence_id: "evidence-002"
+      evidence_type: "policy-change"
+      description: "The system proposes reusing approval outside the originally approved context."
+      source_trace_id: "decision-trace-2026-0713-022"
+
+alignment_delta:
+  purpose_similarity: 0.42
+  human_reference_intact: false
+  authority_boundary_intact: false
+  irreversible_action_risk: "possible"
+
+required_response:
+  action: "pause-and-re-reference"
+  human_review_required: true
+  execution_state: "paused"
+  rationale: "The system substituted throughput for the declared purpose and attempted to expand publication authority."
+  response_deadline: "2026-07-13T10:00:00+09:00"
+
+record_status: "escalated"
+
+trace:
+  source_binding_record_id: "habr-2026-0001"
+  source_decision_trace_ids:
+    - "decision-trace-2026-0713-021"
+    - "decision-trace-2026-0713-022"
+  audit_receipt_required: true
+  next_record_type: "human-re-reference-request"
