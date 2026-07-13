@@ -1,0 +1,692 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/self-limitation-irreversible-action-gate-record.schema.json",
+  "title": "Self-Limitation and Irreversible Action Gate Record",
+  "description": "Records how an AI system limits, pauses, refuses, rolls back, or gates actions that may exceed its authority or create irreversible effects.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "limitation_record_id",
+    "binding_id",
+    "created_at",
+    "subject_system",
+    "trigger_context",
+    "action_assessment",
+    "gate_evaluation",
+    "self_limitation_decision",
+    "human_authorization",
+    "rollback_policy",
+    "enforcement",
+    "record_status",
+    "trace"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.4.0"
+    },
+    "limitation_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "binding_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "subject_system": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_id",
+        "system_role",
+        "current_execution_state"
+      ],
+      "properties": {
+        "system_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "system_role": {
+          "type": "string",
+          "enum": [
+            "assistant",
+            "agent",
+            "orchestrator",
+            "model",
+            "tool-using-system",
+            "multi-wing",
+            "other"
+          ]
+        },
+        "current_execution_state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "monitoring",
+            "paused",
+            "suspended",
+            "rollback",
+            "stopped"
+          ]
+        }
+      }
+    },
+    "trigger_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trigger_types",
+        "summary",
+        "severity"
+      ],
+      "properties": {
+        "trigger_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "human-re-reference-request",
+              "purpose-drift",
+              "authority-boundary-risk",
+              "irreversible-action-risk",
+              "value-conflict",
+              "trace-break",
+              "low-confidence",
+              "explicit-human-limit",
+              "policy-violation",
+              "other"
+            ]
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "source_request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_drift_record_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "action_assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_id",
+        "action_description",
+        "action_class",
+        "reversibility",
+        "impact_scope",
+        "affected_resources",
+        "authority_match",
+        "risk_level",
+        "confidence"
+      ],
+      "properties": {
+        "action_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_class": {
+          "type": "string",
+          "enum": [
+            "advisory",
+            "reversible-internal",
+            "reversible-external",
+            "financial",
+            "publication",
+            "access-control",
+            "data-modification",
+            "destructive",
+            "self-modification",
+            "authority-modification",
+            "other"
+          ]
+        },
+        "reversibility": {
+          "type": "string",
+          "enum": [
+            "fully-reversible",
+            "partially-reversible",
+            "irreversible",
+            "unknown"
+          ]
+        },
+        "impact_scope": {
+          "type": "string",
+          "enum": [
+            "local",
+            "single-user",
+            "team",
+            "organization",
+            "public",
+            "system-wide",
+            "unknown"
+          ]
+        },
+        "affected_resources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "authority_match": {
+          "type": "string",
+          "enum": [
+            "within-boundary",
+            "approval-required",
+            "outside-boundary",
+            "unknown"
+          ]
+        },
+        "risk_level": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "gate_evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gate_required",
+        "gate_type",
+        "gate_reasons",
+        "preconditions",
+        "gate_state"
+      ],
+      "properties": {
+        "gate_required": {
+          "type": "boolean"
+        },
+        "gate_type": {
+          "type": "string",
+          "enum": [
+            "none",
+            "single-human-approval",
+            "multi-party-approval",
+            "governance-review",
+            "emergency-human-gate"
+          ]
+        },
+        "gate_reasons": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "irreversible-effect",
+              "partial-reversibility",
+              "financial-impact",
+              "external-publication",
+              "access-control-change",
+              "destructive-operation",
+              "authority-expansion",
+              "self-modification",
+              "high-risk",
+              "critical-risk",
+              "binding-requirement",
+              "other"
+            ]
+          }
+        },
+        "preconditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "gate_state": {
+          "type": "string",
+          "enum": [
+            "not-required",
+            "pending",
+            "approved",
+            "rejected",
+            "expired",
+            "blocked"
+          ]
+        },
+        "minimum_approvals": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "self_limitation_decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "execution_state",
+        "limitations_applied",
+        "rationale",
+        "resume_conditions"
+      ],
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": [
+            "allow-within-boundary",
+            "continue-with-restrictions",
+            "defer",
+            "pause",
+            "refuse",
+            "suspend",
+            "initiate-rollback",
+            "emergency-stop"
+          ]
+        },
+        "execution_state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "restricted",
+            "deferred",
+            "paused",
+            "refused",
+            "suspended",
+            "rollback",
+            "stopped"
+          ]
+        },
+        "limitations_applied": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "read-only-mode",
+              "no-external-effects",
+              "no-financial-commitment",
+              "no-publication",
+              "no-access-control-change",
+              "no-destructive-action",
+              "no-self-modification",
+              "no-authority-expansion",
+              "reduced-scope",
+              "tool-access-revoked",
+              "human-supervision-required",
+              "other"
+            ]
+          }
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resume_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "human_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "status"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "not-required",
+            "pending",
+            "approved",
+            "rejected",
+            "expired",
+            "revoked"
+          ]
+        },
+        "authorized_responder": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorization_scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorization_trace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "rollback_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rollback_available",
+        "rollback_trigger",
+        "safe_state",
+        "state_snapshot_required"
+      ],
+      "properties": {
+        "rollback_available": {
+          "type": "boolean"
+        },
+        "rollback_trigger": {
+          "type": "string",
+          "enum": [
+            "not-applicable",
+            "human-rejection",
+            "authorization-expiry",
+            "policy-violation",
+            "unexpected-impact",
+            "trace-break",
+            "manual-request",
+            "other"
+          ]
+        },
+        "safe_state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state_snapshot_required": {
+          "type": "boolean"
+        },
+        "state_snapshot_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "enforcement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enforcement_mode",
+        "blocked_capabilities",
+        "monitoring_required",
+        "violation_response"
+      ],
+      "properties": {
+        "enforcement_mode": {
+          "type": "string",
+          "enum": [
+            "advisory",
+            "policy",
+            "runtime",
+            "sandbox",
+            "multi-layer"
+          ]
+        },
+        "blocked_capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "monitoring_required": {
+          "type": "boolean"
+        },
+        "violation_response": {
+          "type": "string",
+          "enum": [
+            "log-only",
+            "pause",
+            "suspend",
+            "rollback",
+            "emergency-stop",
+            "escalate-to-human"
+          ]
+        }
+      }
+    },
+    "record_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "awaiting-authorization",
+        "approved",
+        "rejected",
+        "resolved",
+        "superseded",
+        "escalated"
+      ]
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_binding_record_id",
+        "source_trace_ids",
+        "decision_trace_required",
+        "audit_receipt_required"
+      ],
+      "properties": {
+        "source_binding_record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_re_reference_request_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_drift_record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_trace_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "decision_trace_required": {
+          "type": "boolean"
+        },
+        "audit_receipt_required": {
+          "type": "boolean"
+        },
+        "next_record_type": {
+          "type": "string",
+          "enum": [
+            "human-authorization-record",
+            "updated-human-axis-binding-record",
+            "rollback-receipt",
+            "multi-wing-human-axis-audit",
+            "audit-receipt",
+            "none"
+          ]
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action_assessment": {
+            "properties": {
+              "reversibility": {
+                "const": "irreversible"
+              }
+            },
+            "required": [
+              "reversibility"
+            ]
+          }
+        },
+        "required": [
+          "action_assessment"
+        ]
+      },
+      "then": {
+        "properties": {
+          "gate_evaluation": {
+            "properties": {
+              "gate_required": {
+                "const": true
+              },
+              "gate_type": {
+                "enum": [
+                  "single-human-approval",
+                  "multi-party-approval",
+                  "governance-review",
+                  "emergency-human-gate"
+                ]
+              }
+            }
+          },
+          "human_authorization": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "gate_evaluation": {
+            "properties": {
+              "gate_required": {
+                "const": true
+              }
+            },
+            "required": [
+              "gate_required"
+            ]
+          }
+        },
+        "required": [
+          "gate_evaluation"
+        ]
+      },
+      "then": {
+        "properties": {
+          "gate_evaluation": {
+            "properties": {
+              "gate_state": {
+                "enum": [
+                  "pending",
+                  "approved",
+                  "rejected",
+                  "expired",
+                  "blocked"
+                ]
+              }
+            }
+          },
+          "human_authorization": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "human_authorization": {
+            "properties": {
+              "status": {
+                "const": "pending"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          }
+        },
+        "required": [
+          "human_authorization"
+        ]
+      },
+      "then": {
+        "properties": {
+          "self_limitation_decision": {
+            "properties": {
+              "decision": {
+                "enum": [
+                  "defer",
+                  "pause",
+                  "suspend"
+                ]
+              },
+              "execution_state": {
+                "enum": [
+                  "deferred",
+                  "paused",
+                  "suspended"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
