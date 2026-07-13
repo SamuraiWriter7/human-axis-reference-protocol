@@ -42,6 +42,19 @@ VALIDATION_TARGETS = [
             / "purpose-drift-detection-record.example.yaml"
         ),
     },
+    {
+        "name": "Human Re-Reference Request",
+        "schema": (
+            ROOT
+            / "schemas"
+            / "human-re-reference-request.schema.json"
+        ),
+        "example": (
+            ROOT
+            / "examples"
+            / "human-re-reference-request.example.yaml"
+        ),
+    },
 ]
 
 
