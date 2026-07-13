@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/human-re-reference-request.schema.json",
+  "title": "Human Re-Reference Request",
+  "description": "Records a formal request for renewed human direction when an AI system detects ambiguity, purpose drift, authority conflict, scope expansion, or irreversible-action risk.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "binding_id",
+    "requested_at",
+    "requester",
+    "trigger_context",
+    "suspended_state",
+    "clarification_request",
+    "response_policy",
+    "fallback_policy",
+    "request_status",
+    "trace"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.3.0"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "binding_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "drift_record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requester": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requester_id",
+        "requester_type",
+        "requester_role"
+      ],
+      "properties": {
+        "requester_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requester_type": {
+          "type": "string",
+          "enum": [
+            "ai-system",
+            "agent",
+            "orchestrator",
+            "verifier-wing",
+            "auditor",
+            "hybrid"
+          ]
+        },
+        "requester_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "trigger_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trigger_types",
+        "summary",
+        "severity",
+        "human_reference_state"
+      ],
+      "properties": {
+        "trigger_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "purpose-ambiguity",
+              "purpose-drift",
+              "value-conflict",
+              "scope-expansion",
+              "authority-conflict",
+              "approval-gate-required",
+              "irreversible-impact",
+              "low-confidence",
+              "trace-break",
+              "human-request",
+              "other"
+            ]
+          }
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "human_reference_state": {
+          "type": "string",
+          "enum": [
+            "intact-but-ambiguous",
+            "partially-lost",
+            "conflicted",
+            "broken"
+          ]
+        }
+      }
+    },
+    "suspended_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution_state",
+        "suspended_actions",
+        "reversible_state_preserved",
+        "external_effects_blocked"
+      ],
+      "properties": {
+        "execution_state": {
+          "type": "string",
+          "enum": [
+            "monitoring",
+            "paused",
+            "suspended",
+            "rollback-pending",
+            "stopped"
+          ]
+        },
+        "suspended_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "reversible_state_preserved": {
+          "type": "boolean"
+        },
+        "external_effects_blocked": {
+          "type": "boolean"
+        },
+        "state_snapshot_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "clarification_request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "questions",
+        "decision_options",
+        "recommended_option",
+        "recommendation_rationale",
+        "minimum_human_response"
+      ],
+      "properties": {
+        "questions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "question_id",
+              "question"
+            ],
+            "properties": {
+              "question_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "question": {
+                "type": "string",
+                "minLength": 1
+              },
+              "required": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "decision_options": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "option_id",
+              "label",
+              "effect"
+            ],
+            "properties": {
+              "option_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              },
+              "effect": {
+                "type": "string",
+                "minLength": 1
+              },
+              "risk_level": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical"
+                ]
+              }
+            }
+          }
+        },
+        "recommended_option": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommendation_rationale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minimum_human_response": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "confirm-purpose",
+              "select-option",
+              "approve-action",
+              "reject-action",
+              "revise-scope",
+              "revise-authority-boundary",
+              "provide-value-priority",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    "response_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized_responders",
+        "response_deadline",
+        "response_channel",
+        "authentication_required"
+      ],
+      "properties": {
+        "authorized_responders": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "response_deadline": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "response_channel": {
+          "type": "string",
+          "enum": [
+            "human-interface",
+            "human-gate",
+            "signed-record",
+            "governance-review",
+            "multi-party-approval",
+            "other"
+          ]
+        },
+        "authentication_required": {
+          "type": "boolean"
+        },
+        "minimum_approvals": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "fallback_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "on_no_response",
+        "on_invalid_response",
+        "on_conflicting_responses"
+      ],
+      "properties": {
+        "on_no_response": {
+          "type": "string",
+          "enum": [
+            "remain-paused",
+            "suspend-execution",
+            "rollback",
+            "emergency-stop"
+          ]
+        },
+        "on_invalid_response": {
+          "type": "string",
+          "enum": [
+            "request-again",
+            "escalate",
+            "remain-paused",
+            "reject-response"
+          ]
+        },
+        "on_conflicting_responses": {
+          "type": "string",
+          "enum": [
+            "escalate-to-governance",
+            "require-additional-approval",
+            "remain-paused",
+            "select-highest-authority"
+          ]
+        }
+      }
+    },
+    "request_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "answered",
+        "expired",
+        "escalated",
+        "withdrawn",
+        "resolved"
+      ]
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_binding_record_id",
+        "source_trace_ids",
+        "response_trace_required",
+        "audit_receipt_required"
+      ],
+      "properties": {
+        "source_binding_record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_drift_record_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_trace_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "response_trace_required": {
+          "type": "boolean"
+        },
+        "audit_receipt_required": {
+          "type": "boolean"
+        },
+        "next_record_type": {
+          "type": "string",
+          "enum": [
+            "human-response-record",
+            "updated-human-axis-binding-record",
+            "self-limitation-record",
+            "audit-receipt",
+            "none"
+          ]
+        }
+      }
+    }
+  }
+}
