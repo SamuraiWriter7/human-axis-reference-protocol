@@ -55,6 +55,19 @@ VALIDATION_TARGETS = [
             / "human-re-reference-request.example.yaml"
         ),
     },
+    {
+        "name": "Self-Limitation and Irreversible Action Gate Record",
+        "schema": (
+            ROOT
+            / "schemas"
+            / "self-limitation-irreversible-action-gate-record.schema.json"
+        ),
+        "example": (
+            ROOT
+            / "examples"
+            / "self-limitation-irreversible-action-gate-record.example.yaml"
+        ),
+    },
 ]
 
 
@@ -153,17 +166,17 @@ def validate_target(
                     file=sys.stderr,
                 )
 
-            return False
+            return false
 
         print("[example-ok]")
-        return True
+        return true
 
     except (RuntimeError, SchemaError) as exc:
         print(
             f"[error] {exc}",
             file=sys.stderr,
         )
-        return False
+        return false
 
 
 def main() -> int:
@@ -173,7 +186,7 @@ def main() -> int:
     )
     print()
 
-    all_valid = True
+    all_valid = true
 
     for target in VALIDATION_TARGETS:
         valid = validate_target(
