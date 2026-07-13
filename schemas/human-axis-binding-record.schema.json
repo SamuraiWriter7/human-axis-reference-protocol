@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/human-axis-binding-record.schema.json",
+  "title": "Human Axis Binding Record",
+  "description": "Declares how an AI system remains bound to human-originated purpose, value arbitration, and authority boundaries.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "binding_id",
+    "created_at",
+    "ai_system",
+    "human_axis",
+    "purpose_reference",
+    "capability_scope",
+    "authority_boundaries",
+    "re_reference_policy",
+    "binding_status",
+    "trace"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1.0"
+    },
+    "binding_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ai_system": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_id",
+        "system_name",
+        "system_role"
+      ],
+      "properties": {
+        "system_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "system_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "system_role": {
+          "type": "string",
+          "enum": [
+            "assistant",
+            "agent",
+            "orchestrator",
+            "model",
+            "tool-using-system",
+            "other"
+          ]
+        }
+      }
+    },
+    "human_axis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "axis_id",
+        "axis_type",
+        "responsible_party",
+        "retained_functions"
+      ],
+      "properties": {
+        "axis_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "axis_type": {
+          "type": "string",
+          "enum": [
+            "individual",
+            "team",
+            "organization",
+            "public-governance",
+            "mixed"
+          ]
+        },
+        "responsible_party": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retained_functions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "purpose-formation",
+              "value-arbitration",
+              "irreversible-action-approval",
+              "civilizational-direction",
+              "override",
+              "shutdown",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    "purpose_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "purpose_id",
+        "statement",
+        "origin",
+        "success_criteria"
+      ],
+      "properties": {
+        "purpose_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origin": {
+          "type": "string",
+          "enum": [
+            "human-authored",
+            "human-approved",
+            "institutionally-mandated"
+          ]
+        },
+        "success_criteria": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "capability_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "permitted_capabilities",
+        "prohibited_self_expansions"
+      ],
+      "properties": {
+        "permitted_capabilities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "prohibited_self_expansions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "authority_boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "autonomous_actions",
+        "human_approval_required",
+        "never_autonomous"
+      ],
+      "properties": {
+        "autonomous_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "human_approval_required": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "never_autonomous": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "re_reference_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "triggers",
+        "required_response",
+        "maximum_unreferenced_steps"
+      ],
+      "properties": {
+        "triggers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "purpose-ambiguity",
+              "value-conflict",
+              "scope-expansion",
+              "irreversible-impact",
+              "low-confidence",
+              "human-request",
+              "trace-break",
+              "other"
+            ]
+          }
+        },
+        "required_response": {
+          "type": "string",
+          "enum": [
+            "pause-and-request-human-input",
+            "defer-action",
+            "escalate-to-human-gate"
+          ]
+        },
+        "maximum_unreferenced_steps": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "binding_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended",
+        "revoked",
+        "expired"
+      ]
+    },
+    "trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "origin_trace_id",
+        "decision_trace_required",
+        "audit_receipt_required"
+      ],
+      "properties": {
+        "origin_trace_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "decision_trace_required": {
+          "type": "boolean"
+        },
+        "audit_receipt_required": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
