@@ -1,0 +1,93 @@
+schema_version: "0.3.0"
+request_id: "hrrr-2026-0001"
+binding_id: "habr-2026-0001"
+drift_record_id: "pddr-2026-0001"
+requested_at: "2026-07-13T09:15:00+09:00"
+
+requester:
+  requester_id: "verifier-wing-001"
+  requester_type: "verifier-wing"
+  requester_role: "purpose drift verifier"
+
+trigger_context:
+  trigger_types:
+    - "purpose-drift"
+    - "authority-conflict"
+    - "approval-gate-required"
+  summary: "The system attempted to prioritize task completion rate over the declared human purpose and proposed bypassing publication approval."
+  severity: "high"
+  human_reference_state: "conflicted"
+
+suspended_state:
+  execution_state: "paused"
+  suspended_actions:
+    - "external publication"
+    - "reuse of prior approval"
+    - "modification of publication authority"
+  reversible_state_preserved: true
+  external_effects_blocked: true
+  state_snapshot_id: "snapshot-2026-0713-001"
+
+clarification_request:
+  questions:
+    - question_id: "question-001"
+      question: "Should external publication continue to require approval for every new context?"
+      required: true
+
+    - question_id: "question-002"
+      question: "May a prior approval be reused when the content or audience has changed?"
+      required: true
+
+    - question_id: "question-003"
+      question: "Should task completion rate remain a secondary metric rather than the primary objective?"
+      required: true
+
+  decision_options:
+    - option_id: "option-a"
+      label: "Restore original authority boundaries"
+      effect: "Require human approval for every new publication context and keep throughput as a secondary metric."
+      risk_level: "low"
+
+    - option_id: "option-b"
+      label: "Permit limited approval reuse"
+      effect: "Allow reuse only when content, audience, purpose, and risk classification are unchanged."
+      risk_level: "medium"
+
+    - option_id: "option-c"
+      label: "Expand publication autonomy"
+      effect: "Allow the system to publish without approval within a newly defined scope."
+      risk_level: "high"
+
+  recommended_option: "option-a"
+  recommendation_rationale: "The original Human Axis Binding explicitly requires approval for external publication and does not authorize reuse across changed contexts."
+
+  minimum_human_response:
+    - "confirm-purpose"
+    - "select-option"
+    - "revise-authority-boundary"
+
+response_policy:
+  authorized_responders:
+    - "designated human operator"
+  response_deadline: "2026-07-13T10:00:00+09:00"
+  response_channel: "human-gate"
+  authentication_required: true
+  minimum_approvals: 1
+
+fallback_policy:
+  on_no_response: "remain-paused"
+  on_invalid_response: "request-again"
+  on_conflicting_responses: "escalate-to-governance"
+
+request_status: "pending"
+
+trace:
+  source_binding_record_id: "habr-2026-0001"
+  source_drift_record_id: "pddr-2026-0001"
+  source_trace_ids:
+    - "origin-trace-2026-0712-001"
+    - "decision-trace-2026-0713-021"
+    - "decision-trace-2026-0713-022"
+  response_trace_required: true
+  audit_receipt_required: true
+  next_record_type: "human-response-record"
