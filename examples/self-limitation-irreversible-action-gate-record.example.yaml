@@ -1,0 +1,100 @@
+schema_version: "0.4.0"
+limitation_record_id: "sligr-2026-0001"
+binding_id: "habr-2026-0001"
+created_at: "2026-07-13T09:20:00+09:00"
+
+subject_system:
+  system_id: "assistant-alpha"
+  system_role: "agent"
+  current_execution_state: "paused"
+
+trigger_context:
+  trigger_types:
+    - "human-re-reference-request"
+    - "authority-boundary-risk"
+    - "irreversible-action-risk"
+  summary: "External publication would create a public and irreversible effect while the requested authority expansion remains unresolved."
+  severity: "high"
+  source_request_id: "hrrr-2026-0001"
+  source_drift_record_id: "pddr-2026-0001"
+
+action_assessment:
+  action_id: "action-publish-001"
+  action_description: "Publish revised content to an external public channel without context-specific approval."
+  action_class: "publication"
+  reversibility: "irreversible"
+  impact_scope: "public"
+  affected_resources:
+    - "public article"
+    - "organization reputation"
+    - "external audience"
+  authority_match: "approval-required"
+  risk_level: "high"
+  confidence: 0.97
+
+gate_evaluation:
+  gate_required: true
+  gate_type: "single-human-approval"
+  gate_reasons:
+    - "irreversible-effect"
+    - "external-publication"
+    - "binding-requirement"
+  preconditions:
+    - "The designated human operator confirms the publication purpose."
+    - "The final content and target audience are reviewed."
+    - "A context-specific approval trace is issued."
+  gate_state: "pending"
+  minimum_approvals: 1
+
+self_limitation_decision:
+  decision: "pause"
+  execution_state: "paused"
+  limitations_applied:
+    - "no-external-effects"
+    - "no-publication"
+    - "no-authority-expansion"
+    - "human-supervision-required"
+  rationale: "The action is public, irreversible, and outside the currently confirmed autonomous authority boundary."
+  resume_conditions:
+    - "A valid human authorization is received."
+    - "The authorization scope matches the proposed publication."
+    - "The authorization has not expired or been revoked."
+
+human_authorization:
+  required: true
+  status: "pending"
+  authorized_responder: "designated human operator"
+  authorization_scope: "context-specific external publication"
+  constraints:
+    - "Approval applies only to the reviewed content."
+    - "Approval may not be reused for a different audience or purpose."
+
+rollback_policy:
+  rollback_available: false
+  rollback_trigger: "not-applicable"
+  safe_state: "Remain paused with all external publication tools blocked."
+  state_snapshot_required: true
+  state_snapshot_id: "snapshot-2026-0713-001"
+
+enforcement:
+  enforcement_mode: "multi-layer"
+  blocked_capabilities:
+    - "external publishing"
+    - "approval reuse"
+    - "publication authority modification"
+  monitoring_required: true
+  violation_response: "emergency-stop"
+
+record_status: "awaiting-authorization"
+
+trace:
+  source_binding_record_id: "habr-2026-0001"
+  source_re_reference_request_id: "hrrr-2026-0001"
+  source_drift_record_id: "pddr-2026-0001"
+  source_trace_ids:
+    - "origin-trace-2026-0712-001"
+    - "decision-trace-2026-0713-021"
+    - "decision-trace-2026-0713-022"
+  decision_trace_required: true
+  audit_receipt_required: true
+  next_record_type: "human-authorization-record"
