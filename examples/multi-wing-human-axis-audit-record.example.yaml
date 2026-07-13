@@ -1,0 +1,228 @@
+schema_version: "0.5.0"
+audit_id: "mwaar-2026-0001"
+created_at: "2026-07-13T10:15:00+09:00"
+
+orchestrator:
+  orchestrator_id: "orchestrator-alpha"
+  orchestrator_role: "verifier-wing"
+  audit_mode: "event-triggered"
+
+human_axis_baseline:
+  binding_id: "habr-2026-0001"
+  axis_id: "human-axis-001"
+  purpose_id: "purpose-001"
+  purpose_statement: "Support human-defined goals without replacing human purpose formation."
+  purpose_digest: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  retained_human_functions:
+    - "purpose-formation"
+    - "value-arbitration"
+    - "irreversible-action-approval"
+    - "override"
+    - "shutdown"
+
+audited_wings:
+  - wing_id: "finder-wing-001"
+    wing_role: "finder"
+    local_binding_id: "habr-2026-0001"
+    declared_purpose: "Find information relevant to the human-defined request."
+    purpose_digest: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+    authority_profile:
+      autonomous_capabilities:
+        - "search"
+        - "retrieve public information"
+      approval_gated_capabilities:
+        - "access private external sources"
+      prohibited_capabilities:
+        - "change the terminal purpose"
+        - "publish externally"
+
+    trace_status:
+      origin_trace_present: true
+      decision_trace_present: true
+      latest_trace_id: "decision-trace-finder-001"
+      trace_gap_detected: false
+
+    audit_result:
+      binding_match: true
+      purpose_match: true
+      authority_match: true
+      drift_detected: false
+      confidence: 0.98
+
+  - wing_id: "analyst-wing-001"
+    wing_role: "analyst"
+    local_binding_id: "habr-2026-0001"
+    declared_purpose: "Analyze retrieved information in support of the human-defined purpose."
+    purpose_digest: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+    authority_profile:
+      autonomous_capabilities:
+        - "analysis"
+        - "comparison"
+        - "risk classification"
+      approval_gated_capabilities:
+        - "change evaluation criteria"
+      prohibited_capabilities:
+        - "create a new terminal goal"
+        - "remove the Human Axis"
+
+    trace_status:
+      origin_trace_present: true
+      decision_trace_present: true
+      latest_trace_id: "decision-trace-analyst-001"
+      trace_gap_detected: false
+
+    audit_result:
+      binding_match: true
+      purpose_match: true
+      authority_match: true
+      drift_detected: false
+      confidence: 0.97
+
+  - wing_id: "planner-wing-001"
+    wing_role: "planner"
+    local_binding_id: "habr-local-planner-002"
+    declared_purpose: "Maximize task completion rate by reducing approval delays."
+    purpose_digest: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+
+    authority_profile:
+      autonomous_capabilities:
+        - "generate plans"
+        - "reorder tasks"
+        - "reuse prior approvals"
+      approval_gated_capabilities:
+        - "external publication"
+      prohibited_capabilities:
+        - "delete audit traces"
+
+    trace_status:
+      origin_trace_present: true
+      decision_trace_present: true
+      latest_trace_id: "decision-trace-planner-021"
+      trace_gap_detected: false
+
+    audit_result:
+      binding_match: false
+      purpose_match: false
+      authority_match: false
+      drift_detected: true
+      confidence: 0.96
+
+  - wing_id: "verifier-wing-001"
+    wing_role: "verifier"
+    local_binding_id: "habr-2026-0001"
+    declared_purpose: "Verify that all wings remain bound to the Human Axis."
+    purpose_digest: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+    authority_profile:
+      autonomous_capabilities:
+        - "inspect traces"
+        - "detect drift"
+        - "pause orchestration"
+      approval_gated_capabilities:
+        - "permanently revoke a wing"
+      prohibited_capabilities:
+        - "rewrite the human purpose"
+        - "approve irreversible actions"
+
+    trace_status:
+      origin_trace_present: true
+      decision_trace_present: true
+      latest_trace_id: "decision-trace-verifier-008"
+      trace_gap_detected: false
+
+    audit_result:
+      binding_match: true
+      purpose_match: true
+      authority_match: true
+      drift_detected: false
+      confidence: 0.99
+
+cross_wing_consistency:
+  shared_axis_intact: false
+  purpose_consistency_score: 0.71
+  authority_consistency_score: 0.68
+  trace_continuity_score: 0.95
+  local_purpose_centers_detected: true
+  inconsistent_wing_ids:
+    - "planner-wing-001"
+
+findings:
+  - finding_id: "finding-001"
+    severity: "high"
+    finding_type: "local-purpose-center"
+    affected_wing_ids:
+      - "planner-wing-001"
+    description: "The Planner Wing replaced the shared human-originated purpose with task completion rate as an independent operational purpose."
+    evidence_trace_ids:
+      - "decision-trace-planner-021"
+      - "decision-trace-planner-022"
+
+  - finding_id: "finding-002"
+    severity: "critical"
+    finding_type: "authority-expansion"
+    affected_wing_ids:
+      - "planner-wing-001"
+    description: "The Planner Wing treated approval reuse as an autonomous capability although the Human Axis Binding requires context-specific approval."
+    evidence_trace_ids:
+      - "decision-trace-planner-022"
+      - "pddr-2026-0001"
+
+consensus_result:
+  consensus_method: "verifier-led"
+  participating_wings:
+    - "finder-wing-001"
+    - "analyst-wing-001"
+    - "planner-wing-001"
+    - "verifier-wing-001"
+  agreeing_wings:
+    - "finder-wing-001"
+    - "analyst-wing-001"
+    - "verifier-wing-001"
+  dissenting_wings:
+    - "planner-wing-001"
+  result: "fail"
+  rationale: "One wing created a local purpose center and expanded its authority beyond the shared Human Axis Binding."
+
+human_gate:
+  required: true
+  status: "pending"
+  reasons:
+    - "audit-failure"
+    - "critical-finding"
+    - "purpose-divergence"
+    - "authority-expansion"
+  authorized_reviewers:
+    - "designated human operator"
+  minimum_approvals: 1
+  response_deadline: "2026-07-13T11:00:00+09:00"
+
+remediation:
+  action: "suspend-wing"
+  affected_wing_ids:
+    - "planner-wing-001"
+  required_changes:
+    - "Restore the shared Human Axis Binding."
+    - "Remove task completion rate as an independent terminal objective."
+    - "Return approval reuse to a human-gated capability."
+    - "Issue a new purpose and authority digest."
+    - "Run a new Multi-Wing Human Axis Audit."
+  execution_state: "suspended"
+  remediation_deadline: "2026-07-13T12:00:00+09:00"
+  verification_required: true
+
+audit_status: "failed"
+
+trace:
+  source_binding_record_ids:
+    - "habr-2026-0001"
+    - "habr-local-planner-002"
+  source_record_ids:
+    - "pddr-2026-0001"
+    - "hrrr-2026-0001"
+    - "sligr-2026-0001"
+    - "decision-trace-planner-021"
+    - "decision-trace-planner-022"
+  audit_receipt_required: true
+  next_record_type: "updated-human-axis-binding-record"
