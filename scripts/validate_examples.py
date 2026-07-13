@@ -68,6 +68,19 @@ VALIDATION_TARGETS = [
             / "self-limitation-irreversible-action-gate-record.example.yaml"
         ),
     },
+    {
+        "name": "Multi-Wing Human Axis Audit Record",
+        "schema": (
+            ROOT
+            / "schemas"
+            / "multi-wing-human-axis-audit-record.schema.json"
+        ),
+        "example": (
+            ROOT
+            / "examples"
+            / "multi-wing-human-axis-audit-record.example.yaml"
+        ),
+    },
 ]
 
 
@@ -166,17 +179,17 @@ def validate_target(
                     file=sys.stderr,
                 )
 
-            return false
+            return False
 
         print("[example-ok]")
-        return true
+        return True
 
     except (RuntimeError, SchemaError) as exc:
         print(
             f"[error] {exc}",
             file=sys.stderr,
         )
-        return false
+        return False
 
 
 def main() -> int:
@@ -186,7 +199,7 @@ def main() -> int:
     )
     print()
 
-    all_valid = true
+    all_valid = True
 
     for target in VALIDATION_TARGETS:
         valid = validate_target(
