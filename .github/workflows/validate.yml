@@ -1,0 +1,43 @@
+name: Validate HARP examples
+
+on:
+  push:
+    paths:
+      - "schemas/**"
+      - "examples/**"
+      - "scripts/**"
+      - "requirements.txt"
+      - ".github/workflows/validate.yml"
+
+  pull_request:
+    paths:
+      - "schemas/**"
+      - "examples/**"
+      - "scripts/**"
+      - "requirements.txt"
+      - ".github/workflows/validate.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Validate schemas and examples
+        run: python scripts/validate_examples.py
